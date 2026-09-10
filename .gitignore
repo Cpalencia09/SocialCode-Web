@@ -1,0 +1,5 @@
+# Export original de Claude Design y material de marca del cliente: no se publica.
+design/
+
+# Conversor local (.dc.html -> index.html): se queda en disco.
+tools/

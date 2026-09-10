@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BYSC — Be Your Social Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,600;112,800;125,900&family=Poppins:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; }
+  body { background:#EFE9E0; font-family:'Poppins',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  * { box-sizing:border-box; }
+  a { color:#2980b9; text-decoration:none; }
+  a:hover { color:#7d3c98; }
+  [data-theme="paper"] { --bg:#EFE9E0; --bg2:#F8F5EF; --card:#FFFDF8; --ink:#121214; --muted:#5c584f; --line:rgba(18,18,20,.16); --glass:rgba(239,233,224,.82); --dot:rgba(18,18,20,.14); }
+  [data-theme="ink"] { --bg:#0B0B0D; --bg2:#131317; --card:#18181E; --ink:#F6F3ED; --muted:#9d9890; --line:rgba(246,243,237,.16); --glass:rgba(11,11,13,.8); --dot:rgba(246,243,237,.16); }
+  [data-theme="paper"] [data-only="ink"] { display:none !important; }
+  [data-theme="ink"] [data-only="paper"] { display:none !important; }
+  input, textarea, select, button { font-family:inherit; }
+  input::placeholder, textarea::placeholder { color:var(--muted); }
+  @keyframes rise { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:none; } }
+  @keyframes fade { from { opacity:0; } to { opacity:1; } }
+  @keyframes clipUp { from { opacity:0; transform:translateY(115%) skewY(4deg); } to { opacity:1; transform:none; } }
+  @keyframes barIn { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+  @keyframes tickA { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  @keyframes tickB { from { transform:translateX(-50%); } to { transform:translateX(0); } }
+  @keyframes spinSlow { to { transform:rotate(360deg); } }
+  @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+  @keyframes bob { 0%,100% { transform:translateY(0) rotate(-3deg); } 50% { transform:translateY(-10px) rotate(2deg); } }
+  @keyframes sweep { from { background-position:0% 50%; } to { background-position:200% 50%; } }
+  @keyframes popIn { 0% { opacity:0; transform:scale(.7) rotate(-12deg); } 70% { transform:scale(1.06) rotate(3deg); } 100% { opacity:1; transform:scale(1) rotate(-4deg); } }
+</style>
+<style>
+/* estados hover extraidos de style-hover */
+.hv1:hover{background:var(--ink) !important; color:var(--bg) !important;}
+.hv2:hover{transform:translate(-2px,-2px) !important; background:#7d3c98 !important;}
+.hv3:hover{transform:translate(-3px,-3px) !important; box-shadow:8px 8px 0 0 #7d3c98 !important;}
+.hv4:hover{transform:translate(-3px,-3px) !important; box-shadow:6px 6px 0 0 var(--ink) !important;}
+.hv5:hover{transform:translate(-4px,-4px) !important; box-shadow:10px 10px 0 0 #2980b9 !important;}
+.hv6:hover{transform:translate(-4px,-4px) rotate(-1.5deg) !important;}
+.hv7:hover{transform:translate(-4px,-4px) rotate(1.5deg) !important;}
+.hv8:hover{transform:translate(-3px,-3px) !important; box-shadow:9px 9px 0 0 #121214 !important;}
+.hv9:hover{transform:rotate(0deg) translateY(-6px) !important;}
+.hv10:hover{transform:rotate(0) translateY(-6px) !important;}
+.hv11:hover{transform:translate(-4px,-6px) !important; box-shadow:11px 11px 0 0 #2980b9 !important;}
+.hv12:hover{transform:translate(-4px,-6px) !important; box-shadow:11px 11px 0 0 #7d3c98 !important;}
+.hv13:hover{transform:translateX(6px) !important; background:#fff !important; color:#7d3c98 !important;}
+.hv14:hover{transform:translate(-3px,-3px) !important; box-shadow:9px 9px 0 0 #7d3c98 !important;}
+.hv15:hover{color:#2980b9 !important;}
+.hv16:hover{transform:translate(-3px,-3px) !important; background:#7d3c98 !important;}
+.screen[hidden], [data-when][hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<div data-theme="paper" data-ref="rootRef" style="background:var(--bg); color:var(--ink); min-height:100vh; position:relative; overflow:hidden; transition:background .55s ease, color .55s ease;">
+
+  <div style="position:fixed; inset:0; z-index:0; pointer-events:none; background-image:radial-gradient(var(--dot) 1px, transparent 1px); background-size:26px 26px; opacity:.55;"></div>
+  <div data-ref="blob1" style="position:fixed; left:20%; top:26%; width:min(52vw,620px); height:min(52vw,620px); border-radius:50%; background:radial-gradient(circle, rgba(41,128,185,.42), transparent 68%); filter:blur(46px); z-index:0; pointer-events:none; transition:transform 1s cubic-bezier(.2,.8,.2,1);"></div>
+  <div data-ref="blob2" style="position:fixed; right:12%; top:52%; width:min(40vw,470px); height:min(40vw,470px); border-radius:50%; background:radial-gradient(circle, rgba(125,60,152,.38), transparent 68%); filter:blur(52px); z-index:0; pointer-events:none; transition:transform 1.7s cubic-bezier(.2,.8,.2,1);"></div>
+
+  <header style="position:sticky; top:0; z-index:50; padding:14px 18px 0;">
+    <div style="max-width:1280px; margin:0 auto; display:flex; align-items:center; gap:14px; padding:10px 12px 10px 18px; border:1.5px solid var(--ink); border-radius:999px; background:var(--glass); backdrop-filter:blur(16px); box-shadow:4px 4px 0 0 var(--ink);">
+      <a href="#" data-on="goHome" style="display:flex; align-items:center; flex:0 0 auto;">
+        <img data-only="paper" src="assets/logo-negro.png" alt="BYSC — Be Your Social Code" style="height:38px; width:auto; vertical-align:middle;">
+        <img data-only="ink" src="assets/logo-blanco.png" alt="BYSC — Be Your Social Code" style="height:38px; width:auto; vertical-align:middle;">
+      </a>
+      <nav style="display:flex; gap:2px; margin-left:auto; flex-wrap:wrap; justify-content:flex-end;">
+        <a href="#" data-nav="home" data-on="goHome" style="padding:9px 15px; border-radius:999px; font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:600; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); transition:all .28s;"><span data-i18n="nav.home">Inicio</span></a>
+        <a href="#" data-nav="servicios" data-on="goServicios" style="padding:9px 15px; border-radius:999px; font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:600; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); transition:all .28s;"><span data-i18n="nav.services">Servicios</span></a>
+        <a href="#" data-nav="nosotros" data-on="goNosotros" style="padding:9px 15px; border-radius:999px; font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:600; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); transition:all .28s;"><span data-i18n="nav.about">Nosotros</span></a>
+        <a href="#" data-nav="portafolio" data-on="goPortafolio" style="padding:9px 15px; border-radius:999px; font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:600; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); transition:all .28s;"><span data-i18n="nav.work">Portafolio</span></a>
+        <a href="#" data-nav="contacto" data-on="goContacto" style="padding:9px 15px; border-radius:999px; font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:600; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); transition:all .28s;"><span data-i18n="nav.contact">Contacto</span></a>
+      </nav>
+      <button data-on="toggleLang" style="height:36px; padding:0 12px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-family:'JetBrains Mono',monospace; font-size:11.5px; cursor:pointer; flex:0 0 auto; transition:background .25s, color .25s;" class="hv1"><span data-ref="langLabelRef">ES/EN</span></button>
+      <button data-on="toggleTheme" style="width:36px; height:36px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-size:13px; cursor:pointer; flex:0 0 auto; transition:background .25s, color .25s;" class="hv1"><span data-only="paper">◐</span><span data-only="ink">◑</span></button>
+      <a href="#" data-on="goContacto" style="display:inline-flex; align-items:center; gap:8px; padding:11px 18px; border-radius:999px; background:#2980b9; border:1.5px solid var(--ink); color:#fff; font-size:13px; font-weight:600; white-space:nowrap; flex:0 0 auto; transition:transform .28s cubic-bezier(.2,.8,.2,1), background .28s;" class="hv2"><span data-i18n="cta.book">Agendar</span><span style="font-family:'JetBrains Mono',monospace;">↗</span></a>
+    </div>
+    <div style="max-width:1280px; margin:6px auto 0; height:3px; border-radius:999px; overflow:hidden; background:transparent;"><div data-ref="progressRef" style="height:100%; width:0%; background:linear-gradient(90deg,#2980b9,#7d3c98,#2980b9); background-size:200% 100%; animation:sweep 4s linear infinite; transition:width .2s ease;"></div></div>
+  </header>
+
+  <main data-ref="mainRef" style="position:relative; z-index:1; max-height:calc(100vh - 79px); overflow-y:auto; overflow-x:hidden;">
+
+  <div class="screen" data-screen="home" hidden>
+  <section data-screen-label="Inicio">
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(40px,6vw,84px) 24px clamp(30px,4vw,54px); position:relative;">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+        <div style="display:inline-flex; align-items:center; gap:10px; padding:9px 16px; border:1.5px solid var(--ink); border-radius:999px; background:var(--card); font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; animation:fade .7s both; box-shadow:3px 3px 0 0 var(--ink);">
+          <span style="width:7px; height:7px; border-radius:50%; background:#2980b9;"></span>
+          <span data-i18n="hero.kicker">Caracas · software, automatización e IA</span>
+        </div>
+        <div style="position:relative; width:118px; height:118px; flex:0 0 auto; animation:popIn .9s .5s both;">
+          <div style="position:absolute; inset:0; border:1.5px dashed var(--ink); border-radius:50%; animation:spinSlow 22s linear infinite;"></div>
+          <div style="position:absolute; inset:9px; border-radius:50%; background:#7d3c98; border:1.5px solid var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:#fff; gap:2px;">
+            <span style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:12px; letter-spacing:.04em; line-height:1.15;" data-i18n="hero.badge1">RESPUESTA</span>
+            <span style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:20px; line-height:1;">24H</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:9px; opacity:.85;" data-i18n="hero.badge2">HÁBILES</span>
+          </div>
+        </div>
+      </div>
+
+      <h1 style="font-family:'Archivo',sans-serif; font-weight:900; font-stretch:125%; font-size:clamp(32px,6.2vw,86px); line-height:.9; letter-spacing:-.03em; margin:26px 0 0;">
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:block; animation:clipUp 1s .05s cubic-bezier(.16,1,.3,1) both;" data-i18n="hero.l1">TU OPERACIÓN,</span></span>
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:inline-block; position:relative; animation:clipUp 1s .17s cubic-bezier(.16,1,.3,1) both;">
+          <span style="position:absolute; left:-.06em; right:-.06em; top:14%; bottom:11%; background:#2980b9; transform-origin:left; animation:barIn .8s .8s cubic-bezier(.2,.9,.2,1) both; z-index:0;"></span>
+          <span style="position:relative; z-index:1; color:#fff;" data-i18n="hero.l2">HECHA CÓDIGO</span>
+        </span></span>
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:inline-block; animation:clipUp 1s .29s cubic-bezier(.16,1,.3,1) both;" data-i18n="hero.l3">QUE TRABAJA SOLO.</span><span style="display:inline-block; margin-left:.12em; font-family:'JetBrains Mono',monospace; font-size:.34em; vertical-align:super; color:#7d3c98;">&lt;/&gt;</span></span>
+      </h1>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr)); gap:32px; align-items:end; margin-top:clamp(28px,4vw,48px);">
+        <p style="margin:0; max-width:48ch; font-size:clamp(15px,1.5vw,18.5px); line-height:1.62; color:var(--muted); animation:rise .9s .45s both;" data-i18n="hero.body">Somos el equipo que diseña, programa y automatiza lo que tu negocio hace todos los días. Software a medida, integraciones, agentes de IA, webs y apps: construidos para que dejes de repetir tareas y empieces a escalar.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; animation:rise .9s .58s both;">
+          <a href="#" data-ref="magnetRef" data-on="goContacto" style="display:inline-flex; align-items:center; gap:10px; padding:18px 28px; border-radius:999px; background:var(--ink); border:1.5px solid var(--ink); color:var(--bg); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:14.5px; letter-spacing:.02em; text-transform:uppercase; box-shadow:5px 5px 0 0 #2980b9; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;" class="hv3"><span data-i18n="cta.book2">Agendar reunión</span><span style="font-family:'JetBrains Mono',monospace;">↗</span></a>
+          <a href="#" data-on="goPortafolio" style="display:inline-flex; align-items:center; gap:10px; padding:18px 28px; border-radius:999px; border:1.5px solid var(--ink); background:var(--card); color:var(--ink); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:14.5px; letter-spacing:.02em; text-transform:uppercase; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;" class="hv4"><span data-i18n="cta.work">Ver portafolio</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:relative; margin:clamp(30px,5vw,64px) 0; padding:0; transform:rotate(-2.2deg); animation:fade 1.1s .6s both;">
+      <div style="background:#2980b9; border-top:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); overflow:hidden; padding:13px 0;">
+        <div style="display:flex; width:max-content; animation:tickA 30s linear infinite;">
+          <div style="display:flex; align-items:center; gap:40px; padding-right:40px; font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(17px,2.1vw,27px); text-transform:uppercase; color:#fff; white-space:nowrap;">
+            <span data-i18n="m.software">Desarrollo de software</span><span>✳</span><span data-i18n="m.integr">Integraciones</span><span>✳</span><span data-i18n="m.auto">Automatizaciones</span><span>✳</span><span data-i18n="m.ai">Agentes IA</span><span>✳</span><span data-i18n="m.web">Páginas web</span><span>✳</span><span data-i18n="m.apps">Apps móviles</span><span>✳</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:40px; padding-right:40px; font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(17px,2.1vw,27px); text-transform:uppercase; color:#fff; white-space:nowrap;" aria-hidden="true">
+            <span data-i18n="m.software">Desarrollo de software</span><span>✳</span><span data-i18n="m.integr">Integraciones</span><span>✳</span><span data-i18n="m.auto">Automatizaciones</span><span>✳</span><span data-i18n="m.ai">Agentes IA</span><span>✳</span><span data-i18n="m.web">Páginas web</span><span>✳</span><span data-i18n="m.apps">Apps móviles</span><span>✳</span>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--ink); border-bottom:1.5px solid var(--ink); overflow:hidden; padding:11px 0;">
+        <div style="display:flex; width:max-content; animation:tickB 34s linear infinite;">
+          <div style="display:flex; align-items:center; gap:34px; padding-right:34px; font-family:'JetBrains Mono',monospace; font-size:clamp(11px,1.2vw,14px); letter-spacing:.14em; text-transform:uppercase; color:var(--bg); white-space:nowrap;">
+            <span>BE YOUR SOCIAL CODE</span><span style="color:#7d3c98;">&lt;&gt;</span><span>CARACAS, VE</span><span style="color:#7d3c98;">&lt;&gt;</span><span data-i18n="t.b3">DISPONIBLES PARA NUEVOS PROYECTOS</span><span style="color:#7d3c98;">&lt;&gt;</span><span>BEYOURSOCIALCODE@GMAIL.COM</span><span style="color:#7d3c98;">&lt;&gt;</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:34px; padding-right:34px; font-family:'JetBrains Mono',monospace; font-size:clamp(11px,1.2vw,14px); letter-spacing:.14em; text-transform:uppercase; color:var(--bg); white-space:nowrap;" aria-hidden="true">
+            <span>BE YOUR SOCIAL CODE</span><span style="color:#7d3c98;">&lt;&gt;</span><span>CARACAS, VE</span><span style="color:#7d3c98;">&lt;&gt;</span><span data-i18n="t.b3">DISPONIBLES PARA NUEVOS PROYECTOS</span><span style="color:#7d3c98;">&lt;&gt;</span><span>BEYOURSOCIALCODE@GMAIL.COM</span><span style="color:#7d3c98;">&lt;&gt;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(30px,5vw,60px) 24px clamp(50px,7vw,90px);">
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:26px;">
+        <h2 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(27px,4.4vw,58px); line-height:.95; letter-spacing:-.02em; margin:0; max-width:22ch;" data-i18n="home.whyTitle">No vendemos horas. Entregamos sistemas.</h2>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); letter-spacing:.1em;">/ 01 — 04</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr)); gap:16px;">
+        <div style="grid-column:span 2; min-width:0; padding:clamp(24px,3vw,36px); border:1.5px solid var(--ink); border-radius:26px; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); position:relative; overflow:hidden; transition:transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s;" class="hv5">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#2980b9; letter-spacing:.14em; margin-bottom:16px;">01 / PRODUCTO</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(20px,2.3vw,30px); line-height:1.1; margin:0 0 12px; max-width:24ch;" data-i18n="home.why1t">Algo funcionando en la primera semana</h3>
+          <p style="margin:0; font-size:15px; line-height:1.62; color:var(--muted); max-width:44ch;" data-i18n="home.why1b">Nada de informes de 40 páginas. Sprints cortos, un enlace real que podés abrir y probar, y decisiones tomadas sobre lo que ya existe.</p>
+          <div style="margin-top:22px; display:flex; gap:8px; flex-wrap:wrap;">
+            <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">SPRINT 1W</span>
+            <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="home.chip2">DEMO EN VIVO</span>
+            <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="home.chip3">PRECIO CERRADO</span>
+          </div>
+        </div>
+        <div style="min-width:0; padding:clamp(24px,3vw,32px); border:1.5px solid var(--ink); border-radius:26px; background:#7d3c98; color:#fff; box-shadow:6px 6px 0 0 var(--ink); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv6">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; margin-bottom:16px; opacity:.9;">02 / IA</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:21px; line-height:1.12; margin:0 0 10px;" data-i18n="home.why2t">Agentes que atienden mientras dormís</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; opacity:.92;" data-i18n="home.why2b">Responden, cotizan y agendan con el contexto real de tu negocio. Y le pasan la conversación a una persona cuando hace falta.</p>
+        </div>
+        <div style="min-width:0; padding:clamp(24px,3vw,32px); border:1.5px solid var(--ink); border-radius:26px; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv7">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#2980b9; letter-spacing:.14em; margin-bottom:16px;">03 / OWNERSHIP</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:21px; line-height:1.12; margin:0 0 10px;" data-i18n="home.why3t">El código queda en tus manos</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="home.why3b">Repositorio, documentación y capacitación incluidos. Sin cajas negras ni dependencia eterna del proveedor.</p>
+        </div>
+        <div style="grid-column:span 2; min-width:0; border:1.5px solid var(--ink); border-radius:26px; background:var(--ink); box-shadow:6px 6px 0 0 #2980b9; overflow:hidden;">
+          <div style="display:flex; align-items:center; gap:8px; padding:14px 18px; border-bottom:1.5px solid rgba(255,255,255,.18);">
+            <span style="width:11px; height:11px; border-radius:50%; background:#7d3c98;"></span>
+            <span style="width:11px; height:11px; border-radius:50%; background:#2980b9;"></span>
+            <span style="margin-left:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,.6);">04 / bysc-automation.log</span>
+          </div>
+          <div data-ref="termRef" style="padding:20px 18px 24px; min-height:184px; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:2; color:#eae6df;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:1280px; margin:0 auto clamp(50px,7vw,90px); padding:0 24px;">
+      <div style="border:1.5px solid var(--ink); border-radius:30px; background:#2980b9; box-shadow:8px 8px 0 0 var(--ink); padding:clamp(30px,5vw,64px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:28px; align-items:center; color:#fff;">
+        <h2 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(26px,4vw,52px); line-height:.96; letter-spacing:-.02em; margin:0;" data-i18n="cta.bigTitle">Contanos qué te está costando tiempo.</h2>
+        <div style="justify-self:start;">
+          <p style="margin:0 0 22px; font-size:15.5px; line-height:1.6; max-width:34ch;" data-i18n="cta.bigBody">45 minutos, sin compromiso. Salís con un diagnóstico y un alcance claro por escrito.</p>
+          <a href="#" data-on="goContacto" style="display:inline-flex; align-items:center; gap:10px; padding:18px 30px; border-radius:999px; background:#fff; border:1.5px solid var(--ink); color:#121214; font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:15px; text-transform:uppercase; box-shadow:5px 5px 0 0 #121214; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;" class="hv8"><span data-i18n="cta.book2">Agendar reunión</span><span style="font-family:'JetBrains Mono',monospace;">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div class="screen" data-screen="servicios" hidden>
+  <section data-screen-label="Servicios">
+    <div style="position:relative; border-bottom:1.5px solid var(--ink); background:#7d3c98; overflow:hidden;">
+      <div style="max-width:1280px; margin:0 auto; padding:clamp(44px,7vw,96px) 24px clamp(38px,5vw,72px); position:relative; color:#fff;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; opacity:.85; animation:fade .7s both;" data-i18n="sv.kicker">Servicios / 01—06</div>
+        <h1 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(38px,8vw,110px); line-height:.86; letter-spacing:-.035em; margin:20px 0 0; max-width:16ch;">
+          <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:block; animation:clipUp 1s .06s cubic-bezier(.16,1,.3,1) both;" data-i18n="sv.t1">SEIS PIEZAS</span></span>
+          <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:block; animation:clipUp 1s .18s cubic-bezier(.16,1,.3,1) both; color:transparent; -webkit-text-stroke:1.6px #fff;" data-i18n="sv.t2">PARA ARMAR</span></span>
+          <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:block; animation:clipUp 1s .3s cubic-bezier(.16,1,.3,1) both;" data-i18n="sv.t3">TU SISTEMA.</span></span>
+        </h1>
+        <p style="margin:26px 0 0; max-width:52ch; font-size:16px; line-height:1.62; animation:rise .9s .4s both;" data-i18n="sv.body">Se combinan según el problema. Cada una arranca con un diagnóstico corto y un alcance escrito: sin sorpresas en la factura ni en el calendario.</p>
+      </div>
+    </div>
+
+    <div data-ref="accRef" style="max-width:1280px; margin:0 auto; padding:clamp(30px,4vw,54px) 24px clamp(40px,6vw,80px);">
+      <div data-acc="0" data-on="toggleAcc" style="border:1.5px solid var(--ink); border-radius:22px; background:var(--card); margin-bottom:12px; overflow:hidden; cursor:pointer; transition:box-shadow .35s, transform .35s cubic-bezier(.2,.8,.2,1);">
+        <div style="display:flex; align-items:center; gap:18px; padding:clamp(20px,2.4vw,30px);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#2980b9; flex:0 0 auto;">01</span>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(19px,2.6vw,34px); line-height:1.05; margin:0; flex:1; min-width:0;" data-i18n="sv1t">Desarrollo de software</h3>
+          <span data-acc-icon="0" style="flex:0 0 auto; width:38px; height:38px; border-radius:50%; border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; transition:transform .35s, background .35s, color .35s;">+</span>
+        </div>
+        <div data-acc-body="0" style="max-height:0; overflow:hidden; transition:max-height .45s cubic-bezier(.2,.8,.2,1);">
+          <div style="padding:0 clamp(20px,2.4vw,30px) clamp(24px,2.4vw,30px) clamp(50px,5vw,66px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:20px;">
+            <p style="margin:0; font-size:15px; line-height:1.65; color:var(--muted);" data-i18n="sv1b">Sistemas a medida para operaciones que ya no caben en una planilla: inventarios, facturación, portales internos y paneles de control con tus reglas de negocio.</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start;">
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv1c1">Arquitectura</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">Backend + API</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv1c3">Migraciones</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-acc="1" data-on="toggleAcc" style="border:1.5px solid var(--ink); border-radius:22px; background:var(--card); margin-bottom:12px; overflow:hidden; cursor:pointer; transition:box-shadow .35s, transform .35s cubic-bezier(.2,.8,.2,1);">
+        <div style="display:flex; align-items:center; gap:18px; padding:clamp(20px,2.4vw,30px);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#7d3c98; flex:0 0 auto;">02</span>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(19px,2.6vw,34px); line-height:1.05; margin:0; flex:1; min-width:0;" data-i18n="sv2t">Integraciones</h3>
+          <span data-acc-icon="1" style="flex:0 0 auto; width:38px; height:38px; border-radius:50%; border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; transition:transform .35s, background .35s, color .35s;">+</span>
+        </div>
+        <div data-acc-body="1" style="max-height:0; overflow:hidden; transition:max-height .45s cubic-bezier(.2,.8,.2,1);">
+          <div style="padding:0 clamp(20px,2.4vw,30px) clamp(24px,2.4vw,30px) clamp(50px,5vw,66px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:20px;">
+            <p style="margin:0; font-size:15px; line-height:1.65; color:var(--muted);" data-i18n="sv2b">Que tus herramientas se hablen: CRM, pasarelas de pago, WhatsApp Business, ERP y contabilidad en un solo flujo de datos. Cero copiar y pegar.</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start;">
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">APIs</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">Webhooks</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv2c3">Sincronización</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-acc="2" data-on="toggleAcc" style="border:1.5px solid var(--ink); border-radius:22px; background:var(--card); margin-bottom:12px; overflow:hidden; cursor:pointer; transition:box-shadow .35s, transform .35s cubic-bezier(.2,.8,.2,1);">
+        <div style="display:flex; align-items:center; gap:18px; padding:clamp(20px,2.4vw,30px);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#2980b9; flex:0 0 auto;">03</span>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(19px,2.6vw,34px); line-height:1.05; margin:0; flex:1; min-width:0;" data-i18n="sv3t">Automatizaciones</h3>
+          <span data-acc-icon="2" style="flex:0 0 auto; width:38px; height:38px; border-radius:50%; border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; transition:transform .35s, background .35s, color .35s;">+</span>
+        </div>
+        <div data-acc-body="2" style="max-height:0; overflow:hidden; transition:max-height .45s cubic-bezier(.2,.8,.2,1);">
+          <div style="padding:0 clamp(20px,2.4vw,30px) clamp(24px,2.4vw,30px) clamp(50px,5vw,66px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:20px;">
+            <p style="margin:0; font-size:15px; line-height:1.65; color:var(--muted);" data-i18n="sv3b">Procesos que corren solos: cotizaciones, recordatorios de cobro, reportes diarios, altas de clientes y control de stock. Vos revisás, el sistema ejecuta.</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start;">
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">Workflows</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv3c2">Reportes</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv3c3">Notificaciones</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-acc="3" data-on="toggleAcc" style="border:1.5px solid var(--ink); border-radius:22px; background:var(--card); margin-bottom:12px; overflow:hidden; cursor:pointer; transition:box-shadow .35s, transform .35s cubic-bezier(.2,.8,.2,1);">
+        <div style="display:flex; align-items:center; gap:18px; padding:clamp(20px,2.4vw,30px);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#7d3c98; flex:0 0 auto;">04</span>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(19px,2.6vw,34px); line-height:1.05; margin:0; flex:1; min-width:0;" data-i18n="sv4t">Agentes de IA</h3>
+          <span data-acc-icon="3" style="flex:0 0 auto; width:38px; height:38px; border-radius:50%; border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; transition:transform .35s, background .35s, color .35s;">+</span>
+        </div>
+        <div data-acc-body="3" style="max-height:0; overflow:hidden; transition:max-height .45s cubic-bezier(.2,.8,.2,1);">
+          <div style="padding:0 clamp(20px,2.4vw,30px) clamp(24px,2.4vw,30px) clamp(50px,5vw,66px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:20px;">
+            <p style="margin:0; font-size:15px; line-height:1.65; color:var(--muted);" data-i18n="sv4b">Asistentes que atienden, califican y responden con el contexto de tu negocio. Conectados a tus datos, con reglas claras y traspaso a una persona real.</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start;">
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv4c1">Atención 24/7</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">RAG</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">WhatsApp</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-acc="4" data-on="toggleAcc" style="border:1.5px solid var(--ink); border-radius:22px; background:var(--card); margin-bottom:12px; overflow:hidden; cursor:pointer; transition:box-shadow .35s, transform .35s cubic-bezier(.2,.8,.2,1);">
+        <div style="display:flex; align-items:center; gap:18px; padding:clamp(20px,2.4vw,30px);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#2980b9; flex:0 0 auto;">05</span>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(19px,2.6vw,34px); line-height:1.05; margin:0; flex:1; min-width:0;" data-i18n="sv5t">Páginas web</h3>
+          <span data-acc-icon="4" style="flex:0 0 auto; width:38px; height:38px; border-radius:50%; border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; transition:transform .35s, background .35s, color .35s;">+</span>
+        </div>
+        <div data-acc-body="4" style="max-height:0; overflow:hidden; transition:max-height .45s cubic-bezier(.2,.8,.2,1);">
+          <div style="padding:0 clamp(20px,2.4vw,30px) clamp(24px,2.4vw,30px) clamp(50px,5vw,66px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:20px;">
+            <p style="margin:0; font-size:15px; line-height:1.65; color:var(--muted);" data-i18n="sv5b">Sitios rápidos, medibles y con identidad propia. Landing de campaña, sitio institucional o tienda: pensados para convertir, no para decorar.</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start;">
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv5c1">Diseño UI</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv5c2">SEO técnico</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">E-commerce</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-acc="5" data-on="toggleAcc" style="border:1.5px solid var(--ink); border-radius:22px; background:var(--card); overflow:hidden; cursor:pointer; transition:box-shadow .35s, transform .35s cubic-bezier(.2,.8,.2,1);">
+        <div style="display:flex; align-items:center; gap:18px; padding:clamp(20px,2.4vw,30px);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#7d3c98; flex:0 0 auto;">06</span>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(19px,2.6vw,34px); line-height:1.05; margin:0; flex:1; min-width:0;" data-i18n="sv6t">Apps móviles</h3>
+          <span data-acc-icon="5" style="flex:0 0 auto; width:38px; height:38px; border-radius:50%; border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; transition:transform .35s, background .35s, color .35s;">+</span>
+        </div>
+        <div data-acc-body="5" style="max-height:0; overflow:hidden; transition:max-height .45s cubic-bezier(.2,.8,.2,1);">
+          <div style="padding:0 clamp(20px,2.4vw,30px) clamp(24px,2.4vw,30px) clamp(50px,5vw,66px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:20px;">
+            <p style="margin:0; font-size:15px; line-height:1.65; color:var(--muted);" data-i18n="sv6b">Aplicaciones iOS y Android desde una sola base de código, con notificaciones, pagos y modo offline cuando el negocio lo pide.</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start;">
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;">iOS + Android</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv6c2">Publicación</span>
+              <span style="padding:7px 13px; border:1.5px solid var(--ink); border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11px;" data-i18n="sv6c3">Soporte</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1.5px solid var(--ink); background:var(--bg2);">
+      <div style="max-width:1280px; margin:0 auto; padding:clamp(44px,6vw,84px) 24px;">
+        <h2 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(26px,4vw,50px); line-height:.96; letter-spacing:-.02em; margin:0 0 clamp(28px,4vw,48px);" data-i18n="proc.title">Cómo trabajamos</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr)); gap:18px;">
+          <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--card); box-shadow:5px 5px 0 0 var(--ink); transform:rotate(-1.2deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv9">
+            <div style="width:40px; height:40px; border-radius:50%; background:#2980b9; border:1.5px solid var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Archivo',sans-serif; font-weight:900; font-size:15px; margin-bottom:16px;">1</div>
+            <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="proc1t">Diagnóstico</h3>
+            <p style="margin:0; font-size:14px; line-height:1.6; color:var(--muted);" data-i18n="proc1b">45 minutos para entender el proceso y ver dónde se fuga el tiempo.</p>
+          </div>
+          <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--card); box-shadow:5px 5px 0 0 var(--ink); transform:rotate(.8deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv9">
+            <div style="width:40px; height:40px; border-radius:50%; background:#7d3c98; border:1.5px solid var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Archivo',sans-serif; font-weight:900; font-size:15px; margin-bottom:16px;">2</div>
+            <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="proc2t">Alcance y prototipo</h3>
+            <p style="margin:0; font-size:14px; line-height:1.6; color:var(--muted);" data-i18n="proc2b">Propuesta escrita, precio cerrado y un prototipo navegable antes de programar.</p>
+          </div>
+          <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--card); box-shadow:5px 5px 0 0 var(--ink); transform:rotate(-.8deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv9">
+            <div style="width:40px; height:40px; border-radius:50%; background:#2980b9; border:1.5px solid var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Archivo',sans-serif; font-weight:900; font-size:15px; margin-bottom:16px;">3</div>
+            <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="proc3t">Construcción</h3>
+            <p style="margin:0; font-size:14px; line-height:1.6; color:var(--muted);" data-i18n="proc3b">Entregas semanales en un enlace real. Ajustamos con tu equipo sobre la marcha.</p>
+          </div>
+          <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--ink); color:var(--bg); box-shadow:5px 5px 0 0 #7d3c98; transform:rotate(1.4deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv9">
+            <div style="width:40px; height:40px; border-radius:50%; background:var(--bg); border:1.5px solid var(--bg); color:var(--ink); display:flex; align-items:center; justify-content:center; font-family:'Archivo',sans-serif; font-weight:900; font-size:15px; margin-bottom:16px;">4</div>
+            <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="proc4t">Operación</h3>
+            <p style="margin:0; font-size:14px; line-height:1.6; opacity:.82;" data-i18n="proc4b">Capacitación, documentación y soporte. El sistema queda en tus manos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div class="screen" data-screen="nosotros" hidden>
+  <section data-screen-label="Nosotros">
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(44px,7vw,92px) 24px clamp(36px,5vw,64px);">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); animation:fade .7s both;" data-i18n="ab.kicker">Acerca de nosotros</div>
+      <h1 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(34px,6.6vw,88px); line-height:.9; letter-spacing:-.035em; margin:20px 0 0; max-width:22ch;">
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:block; animation:clipUp 1s .06s cubic-bezier(.16,1,.3,1) both;" data-i18n="ab.t1">SOMOS EL EQUIPO</span></span>
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:block; animation:clipUp 1s .18s cubic-bezier(.16,1,.3,1) both;" data-i18n="ab.t2">TÉCNICO QUE NO</span></span>
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:inline-block; position:relative; animation:clipUp 1s .3s cubic-bezier(.16,1,.3,1) both;">
+          <span style="position:absolute; left:-.05em; right:-.05em; top:15%; bottom:12%; background:#7d3c98; transform-origin:left; animation:barIn .8s .95s cubic-bezier(.2,.9,.2,1) both;"></span>
+          <span style="position:relative; color:#fff;" data-i18n="ab.t3">TENÉS QUE CONTRATAR.</span>
+        </span></span>
+      </h1>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr)); gap:clamp(24px,4vw,56px); margin-top:clamp(30px,4vw,52px);">
+        <p style="margin:0; font-size:16.5px; line-height:1.72; color:var(--muted); animation:rise .9s .42s both;" data-i18n="ab.body1">BYSC nació en Caracas con una idea simple: la mayoría de las empresas no necesita más software, necesita el software correcto. Por eso empezamos por el proceso, nunca por la herramienta.</p>
+        <p style="margin:0; font-size:16.5px; line-height:1.72; color:var(--muted); animation:rise .9s .54s both;" data-i18n="ab.body2">Trabajamos con PyMEs que se están digitalizando, startups que necesitan salir al mercado y equipos corporativos que quieren mover una pieza sin frenar el resto. El nombre lo dice todo: sé tu propio código.</p>
+      </div>
+    </div>
+
+    <div style="border-top:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); background:var(--bg2);">
+      <div style="max-width:1280px; margin:0 auto; padding:clamp(40px,6vw,76px) 24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:16px;">
+        <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--card); box-shadow:5px 5px 0 0 #2980b9; transform:rotate(-1deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv10">
+          <div style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:34px; line-height:1; color:#2980b9; margin-bottom:14px;">01</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="val1t">Claridad antes que código</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="val1b">Si no podemos explicar la solución en una hoja, todavía no la entendimos.</p>
+        </div>
+        <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--card); box-shadow:5px 5px 0 0 #7d3c98; transform:rotate(1deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv10">
+          <div style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:34px; line-height:1; color:#7d3c98; margin-bottom:14px;">02</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="val2t">Entregas, no promesas</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="val2b">Cada semana hay algo nuevo que se puede abrir y probar.</p>
+        </div>
+        <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--card); box-shadow:5px 5px 0 0 #2980b9; transform:rotate(-.6deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv10">
+          <div style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:34px; line-height:1; color:#2980b9; margin-bottom:14px;">03</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="val3t">Sin letra chica</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="val3b">Alcance, precio y plazos por escrito desde el primer día.</p>
+        </div>
+        <div style="padding:26px; border:1.5px solid var(--ink); border-radius:22px; background:var(--card); box-shadow:5px 5px 0 0 #7d3c98; transform:rotate(1.3deg); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv10">
+          <div style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:34px; line-height:1; color:#7d3c98; margin-bottom:14px;">04</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:18px; margin:0 0 8px;" data-i18n="val4t">Cercanía real</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="val4b">Hablás con quien construye, no con un intermediario.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(40px,6vw,76px) 24px;">
+      <div style="display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:26px;">
+        <h2 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(26px,3.6vw,44px); margin:0; letter-spacing:-.02em;" data-i18n="team.title">El equipo</h2>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted);" data-i18n="team.note">/ reemplazá los espacios con fotos reales</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr)); gap:16px;">
+        <div style="border:1.5px solid var(--ink); border-radius:24px; overflow:hidden; background:var(--card); box-shadow:5px 5px 0 0 var(--ink); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv6">
+          <div style="aspect-ratio:4/5; background-color:#2980b9; background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.22) 0 7px, transparent 7px 15px); display:flex; align-items:flex-end; padding:14px;"><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">foto · dirección</span></div>
+          <div style="padding:18px; border-top:1.5px solid var(--ink);"><h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:16px; margin:0 0 3px;">Nombre Apellido</h3><p style="margin:0; font-size:13px; color:var(--muted);" data-i18n="team1r">Dirección & estrategia</p></div>
+        </div>
+        <div style="border:1.5px solid var(--ink); border-radius:24px; overflow:hidden; background:var(--card); box-shadow:5px 5px 0 0 var(--ink); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv7">
+          <div style="aspect-ratio:4/5; background-color:#7d3c98; background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.22) 0 7px, transparent 7px 15px); display:flex; align-items:flex-end; padding:14px;"><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">foto · desarrollo</span></div>
+          <div style="padding:18px; border-top:1.5px solid var(--ink);"><h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:16px; margin:0 0 3px;">Nombre Apellido</h3><p style="margin:0; font-size:13px; color:var(--muted);" data-i18n="team2r">Desarrollo & arquitectura</p></div>
+        </div>
+        <div style="border:1.5px solid var(--ink); border-radius:24px; overflow:hidden; background:var(--card); box-shadow:5px 5px 0 0 var(--ink); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv6">
+          <div style="aspect-ratio:4/5; background-color:#121214; background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.18) 0 7px, transparent 7px 15px); display:flex; align-items:flex-end; padding:14px;"><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">foto · diseño</span></div>
+          <div style="padding:18px; border-top:1.5px solid var(--ink);"><h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:16px; margin:0 0 3px;">Nombre Apellido</h3><p style="margin:0; font-size:13px; color:var(--muted);" data-i18n="team3r">Diseño & producto</p></div>
+        </div>
+        <div style="border:1.5px solid var(--ink); border-radius:24px; overflow:hidden; background:var(--card); box-shadow:5px 5px 0 0 var(--ink); transition:transform .4s cubic-bezier(.2,.8,.2,1);" class="hv7">
+          <div style="aspect-ratio:4/5; background-color:#2980b9; background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.22) 0 7px, transparent 7px 15px); display:flex; align-items:flex-end; padding:14px;"><span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">foto · IA</span></div>
+          <div style="padding:18px; border-top:1.5px solid var(--ink);"><h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:16px; margin:0 0 3px;">Nombre Apellido</h3><p style="margin:0; font-size:13px; color:var(--muted);" data-i18n="team4r">Automatización & IA</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div class="screen" data-screen="portafolio" hidden>
+  <section data-screen-label="Portafolio">
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(44px,7vw,92px) 24px clamp(22px,3vw,34px);">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); animation:fade .7s both;" data-i18n="pf.kicker">Portafolio / 06 casos</div>
+      <h1 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(36px,7.4vw,100px); line-height:.88; letter-spacing:-.035em; margin:20px 0 0; max-width:16ch;">
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:block; animation:clipUp 1s .06s cubic-bezier(.16,1,.3,1) both;" data-i18n="pf.t1">TRABAJO QUE YA</span></span>
+        <span style="display:block; overflow:hidden; padding-bottom:.04em;"><span style="display:inline-block; position:relative; animation:clipUp 1s .18s cubic-bezier(.16,1,.3,1) both;">
+          <span style="position:absolute; left:-.05em; right:-.05em; top:15%; bottom:12%; background:#2980b9; transform-origin:left; animation:barIn .8s .85s cubic-bezier(.2,.9,.2,1) both;"></span>
+          <span style="position:relative; color:#fff;" data-i18n="pf.t2">ESTÁ CORRIENDO.</span>
+        </span></span>
+      </h1>
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-top:30px;">
+        <div data-ref="filterRef" style="display:flex; flex-wrap:wrap; gap:8px;">
+          <button data-filter="all" data-on="setFilter" style="padding:11px 19px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:12.5px; text-transform:uppercase; cursor:pointer; transition:all .3s;" data-i18n="pf.f1">Todos</button>
+          <button data-filter="web" data-on="setFilter" style="padding:11px 19px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:12.5px; text-transform:uppercase; cursor:pointer; transition:all .3s;">Web</button>
+          <button data-filter="app" data-on="setFilter" style="padding:11px 19px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:12.5px; text-transform:uppercase; cursor:pointer; transition:all .3s;">Apps</button>
+          <button data-filter="auto" data-on="setFilter" style="padding:11px 19px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:12.5px; text-transform:uppercase; cursor:pointer; transition:all .3s;" data-i18n="pf.f4">Automatización</button>
+          <button data-filter="ia" data-on="setFilter" style="padding:11px 19px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:12.5px; text-transform:uppercase; cursor:pointer; transition:all .3s;" data-i18n="pf.f5">Agentes IA</button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button data-on="railPrev" style="width:44px; height:44px; border-radius:50%; border:1.5px solid var(--ink); background:var(--card); color:var(--ink); font-family:'JetBrains Mono',monospace; font-size:15px; cursor:pointer; transition:background .25s, color .25s;" class="hv1">←</button>
+          <button data-on="railNext" style="width:44px; height:44px; border-radius:50%; border:1.5px solid var(--ink); background:var(--card); color:var(--ink); font-family:'JetBrains Mono',monospace; font-size:15px; cursor:pointer; transition:background .25s, color .25s;" class="hv1">→</button>
+        </div>
+      </div>
+    </div>
+
+    <div data-ref="gridRef" style="display:flex; gap:18px; overflow-x:auto; scroll-snap-type:x mandatory; padding:14px clamp(24px,4vw,60px) clamp(46px,6vw,84px); scrollbar-width:none; cursor:grab;">
+      <article data-cat="web" style="flex:0 0 min(84vw,430px); scroll-snap-align:center; border:1.5px solid var(--ink); border-radius:26px; overflow:hidden; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); animation:rise .8s .1s both; transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;" class="hv11">
+        <div style="aspect-ratio:16/11; background-color:#2980b9; background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.2) 0 6px, transparent 6px 14px); display:flex; align-items:flex-end; justify-content:space-between; padding:16px; border-bottom:1.5px solid var(--ink);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">captura · sitio institucional</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff; opacity:.8;">1600×1100</span>
+        </div>
+        <div style="padding:26px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.12em; margin-bottom:10px;">WEB · 2025</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:22px; line-height:1.1; margin:0 0 10px;" data-i18n="pf1t">Sitio institucional multisección</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="pf1b">Rediseño completo que carga en menos de un segundo, con formularios conectados al CRM.</p>
+        </div>
+      </article>
+      <article data-cat="ia" style="flex:0 0 min(84vw,430px); scroll-snap-align:center; border:1.5px solid var(--ink); border-radius:26px; overflow:hidden; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); animation:rise .8s .16s both; transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;" class="hv12">
+        <div style="aspect-ratio:16/11; background-color:#7d3c98; background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.2) 0 6px, transparent 6px 14px); display:flex; align-items:flex-end; justify-content:space-between; padding:16px; border-bottom:1.5px solid var(--ink);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">captura · agente WhatsApp</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff; opacity:.8;">1600×1100</span>
+        </div>
+        <div style="padding:26px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.12em; margin-bottom:10px;">AGENTES IA · 2025</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:22px; line-height:1.1; margin:0 0 10px;" data-i18n="pf2t">Agente de atención y ventas</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="pf2b">Responde, cotiza y agenda. Escala a un asesor humano cuando detecta intención de compra.</p>
+        </div>
+      </article>
+      <article data-cat="auto" style="flex:0 0 min(84vw,430px); scroll-snap-align:center; border:1.5px solid var(--ink); border-radius:26px; overflow:hidden; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); animation:rise .8s .22s both; transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;" class="hv11">
+        <div style="aspect-ratio:16/11; background-color:#121214; background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 6px, transparent 6px 14px); display:flex; align-items:flex-end; justify-content:space-between; padding:16px; border-bottom:1.5px solid var(--ink);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">captura · panel de operación</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff; opacity:.8;">1600×1100</span>
+        </div>
+        <div style="padding:26px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.12em; margin-bottom:10px;">AUTOMATIZACIÓN · 2024</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:22px; line-height:1.1; margin:0 0 10px;" data-i18n="pf3t">Cobros y facturación automáticos</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="pf3b">Recordatorios, conciliación y reportes diarios sin intervención manual.</p>
+        </div>
+      </article>
+      <article data-cat="app" style="flex:0 0 min(84vw,430px); scroll-snap-align:center; border:1.5px solid var(--ink); border-radius:26px; overflow:hidden; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); animation:rise .8s .28s both; transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;" class="hv12">
+        <div style="aspect-ratio:16/11; background-color:#7d3c98; background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.2) 0 6px, transparent 6px 14px); display:flex; align-items:flex-end; justify-content:space-between; padding:16px; border-bottom:1.5px solid var(--ink);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">captura · app móvil</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff; opacity:.8;">1600×1100</span>
+        </div>
+        <div style="padding:26px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.12em; margin-bottom:10px;">APP · 2024</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:22px; line-height:1.1; margin:0 0 10px;" data-i18n="pf4t">App de pedidos para delivery</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="pf4b">Pedidos, seguimiento y pagos en iOS y Android, con panel para el comercio.</p>
+        </div>
+      </article>
+      <article data-cat="web" style="flex:0 0 min(84vw,430px); scroll-snap-align:center; border:1.5px solid var(--ink); border-radius:26px; overflow:hidden; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); animation:rise .8s .34s both; transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;" class="hv11">
+        <div style="aspect-ratio:16/11; background-color:#2980b9; background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.2) 0 6px, transparent 6px 14px); display:flex; align-items:flex-end; justify-content:space-between; padding:16px; border-bottom:1.5px solid var(--ink);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">captura · tienda online</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff; opacity:.8;">1600×1100</span>
+        </div>
+        <div style="padding:26px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.12em; margin-bottom:10px;">WEB · 2024</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:22px; line-height:1.1; margin:0 0 10px;" data-i18n="pf5t">Tienda online con stock en vivo</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="pf5b">Catálogo sincronizado con el inventario físico y checkout en tres pasos.</p>
+        </div>
+      </article>
+      <article data-cat="auto" style="flex:0 0 min(84vw,430px); scroll-snap-align:center; border:1.5px solid var(--ink); border-radius:26px; overflow:hidden; background:var(--card); box-shadow:6px 6px 0 0 var(--ink); animation:rise .8s .4s both; transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;" class="hv12">
+        <div style="aspect-ratio:16/11; background-color:#121214; background-image:repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 6px, transparent 6px 14px); display:flex; align-items:flex-end; justify-content:space-between; padding:16px; border-bottom:1.5px solid var(--ink);">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff;">captura · integración CRM</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#fff; opacity:.8;">1600×1100</span>
+        </div>
+        <div style="padding:26px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.12em; margin-bottom:10px;">INTEGRACIÓN · 2024</div>
+          <h3 style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:22px; line-height:1.1; margin:0 0 10px;" data-i18n="pf6t">CRM conectado a WhatsApp</h3>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:var(--muted);" data-i18n="pf6b">Cada conversación queda registrada como oportunidad, con seguimiento automático.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+  </div>
+
+  <div class="screen" data-screen="contacto" hidden>
+  <section data-screen-label="Contacto">
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(44px,7vw,92px) 24px clamp(46px,7vw,92px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:clamp(26px,4vw,56px); align-items:start;">
+      <div style="border:1.5px solid var(--ink); border-radius:30px; background:#7d3c98; color:#fff; box-shadow:8px 8px 0 0 var(--ink); padding:clamp(26px,4vw,46px); position:relative; overflow:hidden;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; opacity:.85;" data-i18n="ct.kicker">Contacto</div>
+        <h1 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:clamp(32px,4.8vw,62px); line-height:.92; letter-spacing:-.03em; margin:18px 0 0;">
+          <span style="display:block; overflow:hidden; padding-bottom:.05em;"><span style="display:block; animation:clipUp 1s .06s cubic-bezier(.16,1,.3,1) both;" data-i18n="ct.t1">AGENDEMOS</span></span>
+          <span style="display:block; overflow:hidden; padding-bottom:.05em;"><span style="display:block; animation:clipUp 1s .18s cubic-bezier(.16,1,.3,1) both; color:transparent; -webkit-text-stroke:1.5px #fff;">45 MIN.</span></span>
+        </h1>
+        <p style="margin:20px 0 30px; max-width:38ch; font-size:16px; line-height:1.65; animation:rise .9s .3s both;" data-i18n="ct.body">Contanos qué proceso te está costando tiempo o dinero. Salís de la reunión con un diagnóstico y una idea clara del alcance.</p>
+        <div style="display:grid; gap:10px;">
+          <a href="https://wa.me/584242505307" target="_blank" rel="noopener" style="display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 22px; border:1.5px solid #fff; border-radius:16px; background:rgba(255,255,255,.1); color:#fff; transition:transform .32s cubic-bezier(.2,.8,.2,1), background .32s;" class="hv13">
+            <span><span style="display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; opacity:.8; margin-bottom:3px;">WHATSAPP</span><span style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:19px;">0424 250 5307</span></span>
+            <span style="font-family:'JetBrains Mono',monospace;">↗</span>
+          </a>
+          <a href="tel:+584126133870" style="display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 22px; border:1.5px solid #fff; border-radius:16px; background:rgba(255,255,255,.1); color:#fff; transition:transform .32s cubic-bezier(.2,.8,.2,1), background .32s;" class="hv13">
+            <span><span style="display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; opacity:.8; margin-bottom:3px;" data-i18n="ct.phone">TELÉFONO</span><span style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:19px;">0412 613 3870</span></span>
+            <span style="font-family:'JetBrains Mono',monospace;">↗</span>
+          </a>
+          <a href="mailto:beyoursocialcode@gmail.com" style="display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 22px; border:1.5px solid #fff; border-radius:16px; background:rgba(255,255,255,.1); color:#fff; transition:transform .32s cubic-bezier(.2,.8,.2,1), background .32s;" class="hv13">
+            <span style="min-width:0;"><span style="display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; opacity:.8; margin-bottom:3px;">EMAIL</span><span style="font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:clamp(13px,1.5vw,18px); word-break:break-all;">beyoursocialcode@gmail.com</span></span>
+            <span style="font-family:'JetBrains Mono',monospace;">↗</span>
+          </a>
+        </div>
+        <div style="margin-top:22px; display:flex; align-items:center; gap:9px; font-family:'JetBrains Mono',monospace; font-size:11.5px; opacity:.9;">
+          <span style="width:7px; height:7px; border-radius:50%; background:#fff;"></span>
+          <span data-i18n="ct.city">Caracas, Venezuela · clientes en toda la región</span>
+        </div>
+      </div>
+
+      <div style="border:1.5px solid var(--ink); border-radius:30px; background:var(--card); box-shadow:8px 8px 0 0 #2980b9; padding:clamp(24px,3.4vw,42px);">
+        <div data-when="sent" hidden>
+          <div style="min-height:440px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:16px; animation:fade .5s both;">
+            <div style="width:58px; height:58px; border-radius:50%; background:#2980b9; border:1.5px solid var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; animation:popIn .7s both;">✓</div>
+            <h2 style="font-family:'Archivo',sans-serif; font-stretch:125%; font-weight:900; font-size:30px; margin:0; letter-spacing:-.02em;" data-i18n="ct.okTitle">Mensaje enviado</h2>
+            <p style="margin:0; font-size:15px; line-height:1.6; color:var(--muted); max-width:34ch;" data-i18n="ct.okBody">Te respondemos el mismo día hábil. Si es urgente, escribinos por WhatsApp.</p>
+            <button data-on="resetForm" style="margin-top:6px; padding:14px 24px; border-radius:999px; border:1.5px solid var(--ink); background:transparent; color:var(--ink); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer;" data-i18n="ct.again">Enviar otro</button>
+          </div>
+        </div>
+        <div data-when="notSent" hidden>
+        <form data-onsubmit="submitForm" style="display:grid; gap:16px;">
+          <label style="display:grid; gap:7px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);" data-i18n="f.name">Nombre</span>
+            <input type="text" required placeholder="Ana Rodríguez" style="padding:15px 17px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg2); color:var(--ink); font-size:15px; outline:none; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:#2980b9; box-shadow:3px 3px 0 0 #2980b9;">
+          </label>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr)); gap:16px;">
+            <label style="display:grid; gap:7px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);">Email</span>
+              <input type="email" required placeholder="ana@empresa.com" style="padding:15px 17px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg2); color:var(--ink); font-size:15px; outline:none; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:#2980b9; box-shadow:3px 3px 0 0 #2980b9;">
+            </label>
+            <label style="display:grid; gap:7px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);" data-i18n="f.company">Empresa</span>
+              <input type="text" placeholder="BYSC C.A." style="padding:15px 17px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg2); color:var(--ink); font-size:15px; outline:none; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:#2980b9; box-shadow:3px 3px 0 0 #2980b9;">
+            </label>
+          </div>
+          <label style="display:grid; gap:7px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);" data-i18n="f.service">¿Qué necesitás?</span>
+            <select style="padding:15px 17px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg2); color:var(--ink); font-size:15px; outline:none; appearance:none; cursor:pointer; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:#2980b9; box-shadow:3px 3px 0 0 #2980b9;">
+              <option data-i18n="f.o1">Desarrollo de software</option>
+              <option data-i18n="f.o2">Integraciones</option>
+              <option data-i18n="f.o3">Automatizaciones</option>
+              <option data-i18n="f.o4">Agentes de IA</option>
+              <option data-i18n="f.o5">Página web</option>
+              <option data-i18n="f.o6">App móvil</option>
+              <option data-i18n="f.o7">Todavía no lo sé</option>
+            </select>
+          </label>
+          <label style="display:grid; gap:7px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);" data-i18n="f.msg">Contanos el contexto</span>
+            <textarea rows="5" placeholder="Hoy cargamos los pedidos a mano y perdemos horas..." style="padding:15px 17px; border-radius:14px; border:1.5px solid var(--line); background:var(--bg2); color:var(--ink); font-size:15px; line-height:1.6; outline:none; resize:vertical; transition:border-color .3s, box-shadow .3s;" style-focus="border-color:#2980b9; box-shadow:3px 3px 0 0 #2980b9;"></textarea>
+          </label>
+          <button type="submit" style="margin-top:4px; padding:19px 28px; border-radius:999px; border:1.5px solid var(--ink); background:var(--ink); color:var(--bg); font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:15px; text-transform:uppercase; cursor:pointer; box-shadow:5px 5px 0 0 #2980b9; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s;" class="hv14"><span data-i18n="f.submit">Solicitar reunión</span></button>
+          <p style="margin:0; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted); line-height:1.6;" data-i18n="f.legal">Respondemos en menos de 24 h hábiles. No compartimos tus datos con nadie.</p>
+        </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <footer style="border-top:1.5px solid var(--ink); background:var(--bg2); position:relative; overflow:hidden;">
+    <div style="max-width:1280px; margin:0 auto; padding:clamp(38px,5vw,64px) 24px clamp(20px,3vw,30px); display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr)); gap:30px; align-items:start;">
+      <div style="display:grid; gap:9px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);" data-i18n="fo.nav">Navegación</span>
+        <a href="#" data-on="goHome" style="font-size:14px; color:var(--ink);" class="hv15"><span data-i18n="nav.home">Inicio</span></a>
+        <a href="#" data-on="goServicios" style="font-size:14px; color:var(--ink);" class="hv15"><span data-i18n="nav.services">Servicios</span></a>
+        <a href="#" data-on="goNosotros" style="font-size:14px; color:var(--ink);" class="hv15"><span data-i18n="nav.about">Nosotros</span></a>
+        <a href="#" data-on="goPortafolio" style="font-size:14px; color:var(--ink);" class="hv15"><span data-i18n="nav.work">Portafolio</span></a>
+        <a href="#" data-on="goContacto" style="font-size:14px; color:var(--ink);" class="hv15"><span data-i18n="nav.contact">Contacto</span></a>
+      </div>
+      <div style="display:grid; gap:9px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);" data-i18n="fo.contact">Contacto</span>
+        <a href="https://wa.me/584242505307" target="_blank" rel="noopener" style="font-size:14px; color:var(--ink);" class="hv15">0424 250 5307</a>
+        <a href="tel:+584126133870" style="font-size:14px; color:var(--ink);" class="hv15">0412 613 3870</a>
+        <a href="mailto:beyoursocialcode@gmail.com" style="font-size:14px; color:var(--ink); word-break:break-all;" class="hv15">beyoursocialcode@gmail.com</a>
+        <span style="font-size:14px; color:var(--muted);">Caracas, Venezuela</span>
+      </div>
+      <div style="display:grid; gap:14px; justify-items:start;">
+        <p style="margin:0; font-size:14px; line-height:1.6; color:var(--muted); max-width:26ch;" data-i18n="fo.tag">Be Your Social Code. Software, automatización e IA desde Caracas.</p>
+        <a href="#" data-on="goContacto" style="display:inline-flex; align-items:center; gap:9px; padding:15px 24px; border-radius:999px; background:#2980b9; border:1.5px solid var(--ink); color:#fff; font-family:'Archivo',sans-serif; font-stretch:112%; font-weight:800; font-size:13.5px; text-transform:uppercase; box-shadow:4px 4px 0 0 var(--ink); transition:transform .3s cubic-bezier(.2,.8,.2,1), background .3s;" class="hv16"><span data-i18n="cta.book2">Agendar reunión</span><span style="font-family:'JetBrains Mono',monospace;">↗</span></a>
+      </div>
+    </div>
+    <div style="max-width:1280px; margin:0 auto; padding:0 24px clamp(18px,2.4vw,26px);">
+      <img data-only="paper" src="assets/logo-negro.png" alt="BYSC" style="width:min(100%,560px); height:auto; display:block; margin:0 auto; vertical-align:middle; opacity:.94;">
+      <img data-only="ink" src="assets/logo-blanco.png" alt="BYSC" style="width:min(100%,560px); height:auto; display:block; margin:0 auto; vertical-align:middle; opacity:.94;">
+    </div>
+    <div style="border-top:1.5px solid var(--line); padding:14px 24px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.12em; color:var(--muted);">© 2026 BYSC · BE YOUR SOCIAL CODE<span style="animation:blink 1.1s step-end infinite; color:#2980b9;">_</span></div>
+  </footer>
+  </main>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  const EN = {
+  "nav.home":"Home","nav.services":"Services","nav.about":"About","nav.work":"Work","nav.contact":"Contact",
+  "cta.book":"Book","cta.book2":"Book a meeting","cta.work":"See our work",
+  "hero.kicker":"Caracas · software, automation & AI","hero.badge1":"REPLY IN","hero.badge2":"BUSINESS",
+  "hero.l1":"YOUR OPERATION,","hero.l2":"TURNED INTO CODE","hero.l3":"THAT RUNS ITSELF.",
+  "hero.body":"We are the team that designs, builds and automates what your business does every day. Custom software, integrations, AI agents, websites and apps — built so you stop repeating tasks and start scaling.",
+  "m.software":"Software development","m.integr":"Integrations","m.auto":"Automation","m.ai":"AI agents","m.web":"Websites","m.apps":"Mobile apps",
+  "t.b3":"AVAILABLE FOR NEW PROJECTS",
+  "home.whyTitle":"We don't sell hours. We deliver systems.",
+  "home.why1t":"Something working in week one","home.why1b":"No 40-page reports. Short sprints, a real link you can open and test, and decisions made on what already exists.",
+  "home.chip2":"LIVE DEMO","home.chip3":"FIXED PRICE",
+  "home.why2t":"Agents that answer while you sleep","home.why2b":"They reply, quote and book with your real business context — and hand the conversation to a person when needed.",
+  "home.why3t":"The code ends up yours","home.why3b":"Repository, documentation and training included. No black boxes, no endless vendor lock-in.",
+  "cta.bigTitle":"Tell us what's eating your time.","cta.bigBody":"45 minutes, no strings. You leave with a diagnosis and a clear written scope.",
+  "sv.kicker":"Services / 01—06","sv.t1":"SIX PIECES","sv.t2":"TO BUILD","sv.t3":"YOUR SYSTEM.",
+  "sv.body":"They combine according to the problem. Each one starts with a short diagnosis and a written scope: no surprises in the invoice or the calendar.",
+  "sv1t":"Software development","sv1b":"Custom systems for operations that no longer fit in a spreadsheet: inventory, invoicing, internal portals and dashboards with your business rules.",
+  "sv1c1":"Architecture","sv1c3":"Migrations",
+  "sv2t":"Integrations","sv2b":"Make your tools talk: CRM, payment gateways, WhatsApp Business, ERP and accounting in a single data flow. Zero copy-paste.","sv2c3":"Sync",
+  "sv3t":"Automation","sv3b":"Processes that run themselves: quotes, payment reminders, daily reports, client onboarding and stock control. You review, the system executes.",
+  "sv3c2":"Reporting","sv3c3":"Notifications",
+  "sv4t":"AI agents","sv4b":"Assistants that answer, qualify and reply with your business context. Connected to your data, with clear rules and handoff to a real person.","sv4c1":"24/7 support",
+  "sv5t":"Websites","sv5b":"Fast, measurable sites with real identity. Campaign landing, corporate site or store: built to convert, not to decorate.","sv5c1":"UI design","sv5c2":"Technical SEO",
+  "sv6t":"Mobile apps","sv6b":"iOS and Android applications from a single codebase, with notifications, payments and offline mode when the business needs it.","sv6c2":"Store release","sv6c3":"Support",
+  "proc.title":"How we work",
+  "proc1t":"Diagnosis","proc1b":"45 minutes to understand the process and see where the time leaks.",
+  "proc2t":"Scope & prototype","proc2b":"Written proposal, fixed price and a clickable prototype before any code.",
+  "proc3t":"Build","proc3b":"Weekly releases on a real link. We adjust with your team as we go.",
+  "proc4t":"Operate","proc4b":"Training, documentation and support. The system ends up in your hands.",
+  "ab.kicker":"About us","ab.t1":"WE ARE THE TECH","ab.t2":"TEAM YOU DON'T","ab.t3":"HAVE TO HIRE.",
+  "ab.body1":"BYSC started in Caracas with a simple idea: most companies don't need more software, they need the right software. That's why we start with the process, never with the tool.",
+  "ab.body2":"We work with SMBs going digital, startups that need to ship, and corporate teams that want to move one piece without stopping the rest. The name says it all: be your own code.",
+  "val1t":"Clarity before code","val1b":"If we can't explain the solution on one page, we don't understand it yet.",
+  "val2t":"Releases, not promises","val2b":"Every week there is something new you can open and test.",
+  "val3t":"No fine print","val3b":"Scope, price and timeline in writing from day one.",
+  "val4t":"Real proximity","val4b":"You talk to the people building it, not to a middleman.",
+  "team.title":"The team","team.note":"/ replace the slots with real photos",
+  "team1r":"Direction & strategy","team2r":"Development & architecture","team3r":"Design & product","team4r":"Automation & AI",
+  "pf.kicker":"Work / 06 cases","pf.t1":"WORK THAT'S","pf.t2":"ALREADY RUNNING.",
+  "pf.f1":"All","pf.f4":"Automation","pf.f5":"AI agents",
+  "pf1t":"Multi-section corporate site","pf1b":"Full redesign loading in under a second, with forms wired into the CRM.",
+  "pf2t":"Sales & support agent","pf2b":"Answers, quotes and books. Escalates to a human advisor when it detects buying intent.",
+  "pf3t":"Automated billing & collections","pf3b":"Reminders, reconciliation and daily reports with no manual work.",
+  "pf4t":"Delivery ordering app","pf4b":"Orders, tracking and payments on iOS and Android, with a merchant dashboard.",
+  "pf5t":"Online store with live stock","pf5b":"Catalogue synced to physical inventory and a three-step checkout.",
+  "pf6t":"CRM connected to WhatsApp","pf6b":"Every conversation becomes a tracked opportunity with automatic follow-up.",
+  "ct.kicker":"Contact","ct.t1":"LET'S BOOK",
+  "ct.body":"Tell us which process is costing you time or money. You leave the call with a diagnosis and a clear sense of scope.",
+  "ct.phone":"PHONE","ct.city":"Caracas, Venezuela · clients across the region",
+  "ct.okTitle":"Message sent","ct.okBody":"We reply the same business day. If it's urgent, message us on WhatsApp.","ct.again":"Send another",
+  "f.name":"Name","f.company":"Company","f.service":"What do you need?","f.msg":"Give us some context","f.submit":"Request a meeting",
+  "f.legal":"We reply within 24 business hours. We never share your data.",
+  "f.o1":"Software development","f.o2":"Integrations","f.o3":"Automation","f.o4":"AI agents","f.o5":"Website","f.o6":"Mobile app","f.o7":"Not sure yet",
+  "fo.tag":"Be Your Social Code. Software, automation and AI from Caracas.","fo.nav":"Navigation","fo.contact":"Contact"
+};
+
+const TERM = {
+  es: [
+    ["$ ", "bysc deploy --cliente pyme", "#7fc0e8"],
+    ["→ ", "492 cotizaciones enviadas sin intervención", "#eae6df"],
+    ["→ ", "agente IA respondió 1.184 mensajes hoy", "#eae6df"],
+    ["→ ", "inventario sincronizado con la tienda", "#eae6df"],
+    ["✓ ", "18 h de trabajo manual eliminadas / semana", "#b98ccf"]
+  ],
+  en: [
+    ["$ ", "bysc deploy --client smb", "#7fc0e8"],
+    ["→ ", "492 quotes sent with zero touches", "#eae6df"],
+    ["→ ", "AI agent answered 1,184 messages today", "#eae6df"],
+    ["→ ", "inventory synced with the storefront", "#eae6df"],
+    ["✓ ", "18 h of manual work removed / week", "#b98ccf"]
+  ]
+};
+
+  var $ = function (r) { return document.querySelector('[data-ref="' + r + '"]'); };
+  var root = $('rootRef'), main = $('mainRef'), progress = $('progressRef');
+  var b1 = $('blob1'), b2 = $('blob2'), magnet = $('magnetRef');
+  var term = $('termRef'), acc = $('accRef'), filters = $('filterRef');
+  var grid = $('gridRef'), langLabel = $('langLabelRef');
+
+  var state = { tab: 'home', sent: false, filter: 'all', lang: 'es', open: 0 };
+  var termTimer = null;
+
+  // ---------- pantallas ----------
+  function paintScreens() {
+    document.querySelectorAll('.screen').forEach(function (el) {
+      el.hidden = el.getAttribute('data-screen') !== state.tab;
+    });
+    document.querySelectorAll('[data-when]').forEach(function (el) {
+      el.hidden = el.getAttribute('data-when') === 'sent' ? !state.sent : state.sent;
+    });
+  }
+
+  function paintNav() {
+    document.querySelectorAll('[data-nav]').forEach(function (el) {
+      var on = el.getAttribute('data-nav') === state.tab;
+      el.style.background = on ? 'var(--ink)' : 'transparent';
+      el.style.color = on ? 'var(--bg)' : 'var(--ink)';
+      el.style.opacity = on ? '1' : '.7';
+    });
+  }
+
+  // ---------- acordeon ----------
+  function paintAcc() {
+    if (!acc) return;
+    acc.querySelectorAll('[data-acc]').forEach(function (el) {
+      var i = Number(el.getAttribute('data-acc'));
+      var on = i === state.open;
+      var body = el.querySelector('[data-acc-body="' + i + '"]');
+      var icon = el.querySelector('[data-acc-icon="' + i + '"]');
+      if (body) body.style.maxHeight = on ? body.scrollHeight + 40 + 'px' : '0px';
+      if (icon) {
+        icon.textContent = on ? '–' : '+';
+        icon.style.background = on ? (i % 2 ? '#7d3c98' : '#2980b9') : 'transparent';
+        icon.style.color = on ? '#fff' : 'var(--ink)';
+        icon.style.transform = on ? 'rotate(180deg)' : 'none';
+      }
+      el.style.boxShadow = on ? (i % 2 ? '6px 6px 0 0 #7d3c98' : '6px 6px 0 0 #2980b9') : '3px 3px 0 0 var(--ink)';
+      el.style.transform = on ? 'translate(-3px,-3px)' : 'none';
+    });
+  }
+
+  // ---------- portafolio ----------
+  function paintFilters() {
+    if (filters) filters.querySelectorAll('[data-filter]').forEach(function (el) {
+      var on = el.getAttribute('data-filter') === state.filter;
+      el.style.background = on ? 'var(--ink)' : 'transparent';
+      el.style.color = on ? 'var(--bg)' : 'var(--ink)';
+      el.style.boxShadow = on ? '3px 3px 0 0 #2980b9' : 'none';
+    });
+    if (!grid) return;
+    grid.querySelectorAll('[data-cat]').forEach(function (el, i) {
+      var show = state.filter === 'all' || el.getAttribute('data-cat') === state.filter;
+      el.style.display = show ? '' : 'none';
+      if (show) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = 'rise .55s ' + (i * 0.05) + 's both'; }
+    });
+  }
+
+  function bindRail(el) {
+    if (!el || el._bound) return;
+    el._bound = true;
+    var down = false, sx = 0, sl = 0;
+    el.addEventListener('mousedown', function (e) { down = true; sx = e.pageX; sl = el.scrollLeft; el.style.cursor = 'grabbing'; });
+    el.addEventListener('mouseleave', function () { down = false; el.style.cursor = 'grab'; });
+    el.addEventListener('mouseup', function () { down = false; el.style.cursor = 'grab'; });
+    el.addEventListener('mousemove', function (e) { if (!down) return; e.preventDefault(); el.scrollLeft = sl - (e.pageX - sx) * 1.2; });
+  }
+
+  // ---------- tema e idioma ----------
+  function applyTheme(next) {
+    if (root && next) root.setAttribute('data-theme', next);
+  }
+
+  function applyLang() {
+    if (!root) return;
+    var en = state.lang === 'en';
+    root.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (!el.hasAttribute('data-es')) el.setAttribute('data-es', el.textContent);
+      var next = en ? (EN[k] || el.getAttribute('data-es')) : el.getAttribute('data-es');
+      if (el.textContent !== next) el.textContent = next;
+    });
+    document.documentElement.lang = en ? 'en' : 'es';
+    if (langLabel) langLabel.textContent = en ? 'EN/ES' : 'ES/EN';
+  }
+
+  // ---------- terminal ----------
+  function startTerm() {
+    if (!term || term.dataset.lang === state.lang) return;
+    term.dataset.lang = state.lang;
+    clearTimeout(termTimer);
+    term.textContent = '';
+    var lines = TERM[state.lang];
+    var li = 0, ci = 0, row = null;
+    function step() {
+      if (li >= lines.length) return;
+      var pre = lines[li][0], text = lines[li][1], color = lines[li][2];
+      if (ci === 0) {
+        row = document.createElement('div');
+        row.style.color = color;
+        row.style.whiteSpace = 'pre-wrap';
+        row.textContent = pre;
+        term.appendChild(row);
+      }
+      row.textContent = pre + text.slice(0, ci + 1);
+      ci++;
+      if (ci >= text.length) { li++; ci = 0; termTimer = setTimeout(step, 420); }
+      else termTimer = setTimeout(step, 17);
+    }
+    termTimer = setTimeout(step, 500);
+  }
+
+  // ---------- render ----------
+  function render() {
+    paintScreens();
+    paintNav();
+    paintAcc();
+    paintFilters();
+    applyLang();
+    startTerm();
+  }
+
+  function setTab(tab) {
+    state.tab = tab;
+    render();
+    if (main) main.scrollTop = 0;
+  }
+
+  // ---------- acciones ----------
+  var actions = {
+    goHome: function () { setTab('home'); },
+    goServicios: function () { setTab('servicios'); },
+    goNosotros: function () { setTab('nosotros'); },
+    goPortafolio: function () { setTab('portafolio'); },
+    goContacto: function () { setTab('contacto'); },
+    toggleLang: function () { state.lang = state.lang === 'es' ? 'en' : 'es'; render(); },
+    toggleTheme: function () {
+      applyTheme(root && root.getAttribute('data-theme') === 'ink' ? 'paper' : 'ink');
+    },
+    toggleAcc: function (el) {
+      var i = Number(el.getAttribute('data-acc'));
+      state.open = state.open === i ? -1 : i;
+      paintAcc();
+    },
+    setFilter: function (el) { state.filter = el.getAttribute('data-filter'); paintFilters(); },
+    railPrev: function () { if (grid) grid.scrollBy({ left: -460, behavior: 'smooth' }); },
+    railNext: function () { if (grid) grid.scrollBy({ left: 460, behavior: 'smooth' }); },
+    resetForm: function () { state.sent = false; paintScreens(); }
+  };
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-on]');
+    if (!el) return;
+    var fn = actions[el.getAttribute('data-on')];
+    if (!fn) return;
+    if (el.tagName === 'A') e.preventDefault();
+    fn(el);
+  });
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target.closest('[data-onsubmit]');
+    if (!form) return;
+    e.preventDefault();
+    state.sent = true;
+    paintScreens();
+    if (main) main.scrollTop = 0;
+  });
+
+  // ---------- parallax, iman y progreso ----------
+  window.addEventListener('mousemove', function (e) {
+    var x = e.clientX / window.innerWidth - 0.5, y = e.clientY / window.innerHeight - 0.5;
+    if (b1) b1.style.transform = 'translate(' + (x * 110) + 'px,' + (y * 90) + 'px)';
+    if (b2) b2.style.transform = 'translate(' + (x * -140) + 'px,' + (y * -70) + 'px)';
+    if (magnet) {
+      var r = magnet.getBoundingClientRect();
+      var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      if (Math.hypot(dx, dy) < 160) magnet.style.transform = 'translate(' + (dx * 0.16) + 'px,' + (dy * 0.16) + 'px)';
+      else magnet.style.transform = '';
+    }
+  });
+
+  if (main && progress) main.addEventListener('scroll', function () {
+    var max = main.scrollHeight - main.clientHeight;
+    progress.style.width = (max > 0 ? (main.scrollTop / max) * 100 : 0) + '%';
+  });
+
+  // ---------- arranque ----------
+  bindRail(grid);
+  if (grid) grid.style.cursor = 'grab';
+  render();
+})();
+
+</script>
+</body>
+</html>
