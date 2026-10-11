@@ -28,7 +28,7 @@ No hace falta compilar nada. Para verlo en local, servilo por HTTP para que
 carguen los assets relativos:
 
 ```bash
-python -m http.server 8765
+python3 -m http.server 8765
 ```
 
 Y abrí http://127.0.0.1:8765
